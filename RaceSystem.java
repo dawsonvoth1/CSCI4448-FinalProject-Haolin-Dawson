@@ -65,8 +65,8 @@ class LeagueSystem extends RaceSystem {
             }
 
             // Rotate the team names to create the next day's schedule
-            String temp = teamNames[numOfDays - 1];
-            System.arraycopy(teamNames, 0, teamNames, 1, numOfDays - 1);
+            String temp = teamNames[numOfTeams - 1];
+            System.arraycopy(teamNames, 0, teamNames, 1, numOfTeams - 1);
             teamNames[0] = temp;
         }
         notifyObservers();
