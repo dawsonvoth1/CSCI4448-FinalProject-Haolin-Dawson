@@ -29,22 +29,24 @@ public class UserInterface {
             return;
         }
 
+        RaceSystem system = null;
         switch (raceSystem) {
             case 1:
-                LeagueSystem league = new LeagueSystem(numTeams, numDays, gameDuration);
-                league.generateSchedule();
+                system = new LeagueSystem(numTeams, numDays, gameDuration);
                 break;
             case 2:
-                KnockoutSystem knockout = new KnockoutSystem(numTeams, numDays, gameDuration);
-                knockout.generateSchedule();
+                system = new KnockoutSystem(numTeams, numDays, gameDuration);
                 break;
             case 3:
-                SwissRoundSystem swiss = new SwissRoundSystem(numTeams, numDays, gameDuration);
-                swiss.generateSchedule();
+                system = new SwissRoundSystem(numTeams, numDays, gameDuration);
                 break;
             default:
                 System.out.println("Invalid input. Please enter a number from 1 to 3.");
                 break;
         }
+        system.generateSchedule();
+        ResultExporter exporter = new ResultExporter("result.txt");
+        system.addObserver(exporter);
+        System.out.println("Schedule export successfully!");
     }
 }

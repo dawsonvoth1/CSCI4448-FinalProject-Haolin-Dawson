@@ -5,11 +5,23 @@ public abstract class RaceSystem {
     protected int numOfTeams;
     protected int numOfDays;
     protected int gameDuration;
+    protected List<RaceObserver> observers;
+    protected String schedule;
 
     public RaceSystem(int numOfTeams, int numOfDays, int gameDuration) {
         this.numOfTeams = numOfTeams;
         this.numOfDays = numOfDays;
         this.gameDuration = gameDuration;
+        this.observers = new ArrayList<>();
+    }
+    public void addObserver(RaceObserver observer) {
+        this.observers.add(observer);
+    }
+
+    public void notifyObservers() {
+        for (RaceObserver observer : observers) {
+            observer.update(schedule);
+        }
     }
 
     public abstract void generateSchedule();
@@ -34,6 +46,7 @@ class LeagueSystem extends RaceSystem {
 
     @Override
     public void generateSchedule() {
+        StringBuilder sb = new StringBuilder();
         System.out.println("Simulation for " + numOfTeams + " teams over " + numOfDays + " days.");
         // Create an array of team names
         String[] teamNames = new String[numOfTeams];
@@ -56,6 +69,7 @@ class LeagueSystem extends RaceSystem {
             System.arraycopy(teamNames, 0, teamNames, 1, numOfDays - 1);
             teamNames[0] = temp;
         }
+        notifyObservers();
     }
 }
 
@@ -74,7 +88,6 @@ class KnockoutSystem extends RaceSystem {
                 teamNames[i] = "team" + (i+1);
             }
 
-            // Generate the schedule
             int numOfRounds = (int) Math.ceil(Math.log(numOfTeams) / Math.log(2));
             int numOfGames = numOfTeams / 2;
 
@@ -90,6 +103,7 @@ class KnockoutSystem extends RaceSystem {
                 // Reduce the number of matches by half for the next round
                 numOfGames /= 2;
             }
+            notifyObservers();
         }
     }
 
@@ -109,11 +123,8 @@ class SwissRoundSystem extends RaceSystem {
                 teamNames[i] = "team" + (i+1);
             }
 
-            // Generate the schedule
-            int numOfRounds = numOfTeams - 1;
             int numOfGames = numOfTeams / 2;
-
-            for (int day = 1; day <= numOfRounds; day++) {
+            for (int day = 1; day <= numOfDays; day++) {
                 System.out.println("Day " + day + ":");
 
                 // Pair up teams based on their current ranking
@@ -128,6 +139,7 @@ class SwissRoundSystem extends RaceSystem {
                 System.arraycopy(teamNames, 0, teamNames, 1, numOfTeams - 1);
                 teamNames[1] = temp;
             }
+            notifyObservers();
         }
     }
 
