@@ -1,9 +1,13 @@
 import java.util.Scanner;
 
 public class UserInterface {
+    private RaceCommand command;
+
+    public void setCommand(RaceCommand command) {
+        this.command = command;
+    }
 
     public void run() {
-
         int numTeams = 0;
         int numDays = 0;
         int gameDuration = 0;
@@ -29,24 +33,24 @@ public class UserInterface {
             return;
         }
 
-        RaceSystem system = null;
         switch (raceSystem) {
             case 1:
-                system = new LeagueSystem(numTeams, numDays, gameDuration);
+                command = new GenerateCommand(new LeagueSystem(numTeams, numDays, gameDuration));
                 break;
             case 2:
-                system = new KnockoutSystem(numTeams, numDays, gameDuration);
+                command = new GenerateCommand(new KnockoutSystem(numTeams, numDays, gameDuration));
                 break;
             case 3:
-                system = new SwissRoundSystem(numTeams, numDays, gameDuration);
+                command = new GenerateCommand(new SwissRoundSystem(numTeams, numDays, gameDuration));
                 break;
             default:
                 System.out.println("Invalid input. Please enter a number from 1 to 3.");
                 break;
         }
-        system.generateSchedule();
-        ResultExporter exporter = new ResultExporter("result.txt");
-        system.addObserver(exporter);
-        System.out.println("Schedule export successfully!");
+
+        if (command != null) {
+            command.execute();
+        }
     }
 }
+
