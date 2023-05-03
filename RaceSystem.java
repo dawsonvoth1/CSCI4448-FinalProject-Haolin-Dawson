@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class RaceSystem {
@@ -7,12 +8,20 @@ public abstract class RaceSystem {
     protected int gameDuration;
     protected List<RaceObserver> observers;
     protected String schedule;
+    protected List<Team> teams;
 
     public RaceSystem(int numOfTeams, int numOfDays, int gameDuration) {
         this.numOfTeams = numOfTeams;
         this.numOfDays = numOfDays;
         this.gameDuration = gameDuration;
         this.observers = new ArrayList<>();
+        this.teams = new ArrayList<>();
+        for(int i=0; i < numOfTeams; i++){
+            Team temp_team = new Team();
+            temp_team.id_ = i;
+            temp_team.name_ = "";
+            this.teams.add(temp_team);
+        }
     }
     public void addObserver(RaceObserver observer) {
         this.observers.add(observer);
@@ -61,13 +70,15 @@ class LeagueSystem extends RaceSystem {
             for (int i = 0; i < numOfTeams / 2; i++) {
                 int leftIndex = i;
                 int rightIndex = numOfTeams - i - 1;
-                System.out.println(teamNames[leftIndex] + " vs " + teamNames[rightIndex]);
+                System.out.println("Team " + teams.get(leftIndex).id_.toString() + " " + teams.get(leftIndex).name_ + " vs. " + "Team " + teams.get(rightIndex).id_.toString() + " " + teams.get(rightIndex).name_);
+//                System.out.println(teamNames[leftIndex] + " vs " + teamNames[rightIndex]);
             }
 
             // Rotate the team names to create the next day's schedule
-            String temp = teamNames[numOfTeams - 1];
-            System.arraycopy(teamNames, 0, teamNames, 1, numOfTeams - 1);
-            teamNames[0] = temp;
+//            String temp = teamNames[numOfTeams - 1];
+//            System.arraycopy(teamNames, 0, teamNames, 1, numOfTeams - 1);
+//            teamNames[0] = temp;
+            Collections.rotate(teams, 1);
         }
         notifyObservers();
     }
@@ -97,7 +108,8 @@ class KnockoutSystem extends RaceSystem {
                 for (int i = 0; i < numOfGames; i++) {
                     int leftIndex = i * 2;
                     int rightIndex = leftIndex + 1;
-                    System.out.println(teamNames[leftIndex] + " vs " + teamNames[rightIndex]);
+//                    System.out.println(teamNames[leftIndex] + " vs " + teamNames[rightIndex]);
+                    System.out.println("Team " + teams.get(leftIndex).id_.toString() + " " + teams.get(leftIndex).name_ + " vs. " + "Team " + teams.get(rightIndex).id_.toString() + " " + teams.get(rightIndex).name_);
                 }
 
                 // Reduce the number of matches by half for the next round
@@ -131,13 +143,15 @@ class SwissRoundSystem extends RaceSystem {
                 for (int i = 0; i < numOfGames; i++) {
                     int leftIndex = i;
                     int rightIndex = numOfTeams - i - 2;
-                    System.out.println(teamNames[leftIndex] + " vs " + teamNames[rightIndex]);
+//                    System.out.println(teamNames[leftIndex] + " vs " + teamNames[rightIndex]);
+                    System.out.println("Team " + teams.get(leftIndex).id_.toString() + " " + teams.get(leftIndex).name_ + " vs. " + "Team " + teams.get(rightIndex).id_.toString() + " " + teams.get(rightIndex).name_);
                 }
 
                 // Rotate the team names to create the next round's pairings
-                String temp = teamNames[numOfTeams - 1];
-                System.arraycopy(teamNames, 0, teamNames, 1, numOfTeams - 1);
-                teamNames[1] = temp;
+//                String temp = teamNames[numOfTeams - 1];
+//                System.arraycopy(teamNames, 0, teamNames, 1, numOfTeams - 1);
+//                teamNames[1] = temp;
+                Collections.rotate(teams, 1);
             }
             notifyObservers();
         }
